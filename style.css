@@ -83,3 +83,62 @@ button:active {
     color: #333;
     margin-top: 10px;
 }
+/* ===== Barre de progression ===== */
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: #e5e5e5;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #2b7cff;
+    transition: width .35s ease;
+}
+
+/* ===== Boutons ===== */
+
+.choice{
+    margin-bottom:12px;
+}
+
+.back-btn{
+    margin-top:15px;
+    background:#dadde5;
+    color:#333;
+}
+
+/* ===== Checkbox ===== */
+
+.option{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:15px;
+    background:white;
+    border:2px solid #ddd;
+    border-radius:12px;
+    margin-bottom:12px;
+    cursor:pointer;
+}
+
+.option input{
+    width:22px;
+    height:22px;
+}
+
+/* ===== Zone commentaire ===== */
+
+textarea{
+    width:100%;
+    min-height:110px;
+    padding:15px;
+    border-radius:12px;
+    border:1px solid #ddd;
+    resize:none;
+    margin:20px 0;
+}

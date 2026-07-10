@@ -97,22 +97,44 @@ const startBtn = document.getElementById("startBtn");
 startBtn.addEventListener("click", afficherQuestion);
 
 // Affichage d'une question
-function afficherQuestion() {
+function afficherQuestion(){
 
     const q = questions[etape];
 
-    container.innerHTML = `
-        <div class="progress">
-            Étape ${etape + 1}/${questions.length}
-        </div>
+    const pourcentage=((etape)/questions.length)*100;
 
-        <h2 class="question">
-            ${q.titre}
-        </h2>
+    container.innerHTML=`
 
-        ${q.choix.map(c =>
-            `<button class="choice" onclick="reponse('${c}')">${c}</button>`
-        ).join("")}
+    <div class="progress-bar">
+        <div class="progress-fill" style="width:${pourcentage}%"></div>
+    </div>
+
+    <div class="progress">
+        Étape ${etape+1}/${questions.length}
+    </div>
+
+    <h2 class="question">
+        ${q.titre}
+    </h2>
+
+    ${q.choix.map(c=>`
+
+        <button class="choice"
+        onclick="reponse('${c}')">
+
+        ${c}
+
+        </button>
+
+    `).join("")}
+
+    ${etape>0?`
+        <button class="back-btn"
+        onclick="retour()">
+        ⬅ Retour
+        </button>
+    `:""}
+
     `;
 }
 
@@ -133,39 +155,60 @@ function reponse(valeur) {
 }
 
 // Options supplémentaires
-function afficherOptions() {
+function afficherOptions(){
 
-    container.innerHTML = `
+container.innerHTML=`
 
-        <div class="progress">
-            Dernière étape
-        </div>
+<div class="progress-bar">
 
-        <h2 class="question">
-            Quels services souhaitez-vous ?
-        </h2>
+<div class="progress-fill"
+style="width:100%">
+</div>
 
-        <button class="choice" onclick="ajouterOption('Vitres')">
-            🪟 Vitres
-        </button>
+</div>
 
-        <button class="choice" onclick="ajouterOption('Four')">
-            🔥 Four
-        </button>
+<h2 class="question">
 
-        <button class="choice" onclick="ajouterOption('Réfrigérateur')">
-            ❄️ Réfrigérateur
-        </button>
+Options souhaitées
 
-        <button class="choice" onclick="ajouterOption('Repassage')">
-            👔 Repassage
-        </button>
+</h2>
 
-        <button onclick="finOptions()">
-            Continuer
-        </button>
+<label class="option">
+<input type="checkbox" value="Vitres">
+🪟 Vitres
+</label>
 
-    `;
+<label class="option">
+<input type="checkbox" value="Four">
+🔥 Four
+</label>
+
+<label class="option">
+<input type="checkbox" value="Réfrigérateur">
+❄️ Réfrigérateur
+</label>
+
+<label class="option">
+<input type="checkbox" value="Repassage">
+👔 Repassage
+</label>
+
+<label class="option">
+<input type="checkbox" value="Lessive">
+🧺 Lessive
+</label>
+
+<textarea
+id="commentaire"
+placeholder="Informations complémentaires..."></textarea>
+
+<button onclick="finOptions()">
+
+Continuer
+
+</button>
+
+`;
 }
 
 // Ajout d'une option
@@ -178,8 +221,29 @@ function ajouterOption(option) {
 }
 
 // Fin des options
-function finOptions() {
-    afficherResume();
+function finOptions(){
+
+devis.options=[];
+
+document
+.querySelectorAll("input[type='checkbox']")
+.forEach(box=>{
+
+if(box.checked){
+
+devis.options.push(box.value);
+
+}
+
+});
+
+devis.commentaire=
+document
+.getElementById("commentaire")
+.value;
+
+afficherResume();
+
 }
 
 // Résumé
@@ -199,6 +263,9 @@ function afficherResume() {
             <p><b>Pièces :</b> ${devis.pieces}</p>
             <p><b>Salles de bain :</b> ${devis.sallesBain}</p>
             <p><b>Options :</b> ${devis.options.join(", ") || "Aucune"}</p>
+            <p><b>Commentaire :</b><br>
+${devis.commentaire || "Aucun"}
+</p>
 
         </div>
 
@@ -216,5 +283,16 @@ function envoyerTelegram() {
     console.log(devis);
 
     tg.sendData(JSON.stringify(devis));
+
+}
+function retour(){
+
+    if(etape>0){
+
+        etape--;
+
+        afficherQuestion();
+
+    }
 
 }
