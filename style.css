@@ -47,4 +47,39 @@ button {
 
 button:active {
     transform: scale(0.98);
+}/* Questionnaire */
+
+.progress {
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 20px;
+}
+
+.question {
+    font-size: 22px;
+    color: #222;
+    margin-bottom: 25px;
+}
+
+.choice {
+    margin-bottom: 12px;
+    background: #2b7cff;
+}
+
+.choice:hover {
+    opacity: 0.9;
+}
+
+.summary {
+    text-align: left;
+    background: #f5f7fb;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.back {
+    background: #e9eef8;
+    color: #333;
+    margin-top: 10px;
 }
