@@ -7,25 +7,31 @@
 // =======================
 
 function ouvrirPlanning(){
-    alert("✅ ouvrirPlaning appelée");
-    const container = document.querySelector(".container");
+  alert("✅ ouvrirPlanning appelée");
 
-    container.innerHTML = `
-        <h1>📅 Planning</h1>
+  const container = document.querySelector(".container");
 
-        <div style="margin-bottom:15px;">
-            <button onclick="afficherPlanningJourUI()">Jour</button>
-            <button onclick="ouvrirPlanningSemaine()">Semaine</button>
-        </div>
+  if (!container) {
+    alert("❌ .container introuvable");
+    return;
+  }
 
-        <div id="planningContent"></div>
+  container.innerHTML = `
+      <h1>📅 Planning</h1>
 
-        <br>
+      <div style="margin-bottom:15px;">
+          <button onclick="afficherPlanningJourUI()">Jour</button>
+          <button onclick="ouvrirPlanningSemaine()">Semaine</button>
+      </div>
 
-        <button onclick="afficherDashboard()">⬅️ Retour</button>
-    `;
+      <div id="planningContent"></div>
 
-    afficherPlanningJourUI();
+      <br>
+
+      <button onclick="afficherDashboard()">⬅️ Retour</button>
+  `;
+
+  afficherPlanningJourUI();
 }
 
 
@@ -617,3 +623,11 @@ function formatDate(date){
 
     return date.toISOString().split("T")[0];
 }
+
+window.ouvrirPlanning = ouvrirPlanning;
+window.ouvrirPrestations = ouvrirPrestations;
+window.afficherDashboard = afficherDashboard;
+window.ouvrirClients = ouvrirClients;
+
+window.afficherPlanningJourUI = afficherPlanningJourUI;
+window.ouvrirPlanningSemaine = ouvrirPlanningSemaine;
