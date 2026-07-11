@@ -2,7 +2,193 @@
 // PRESTATIONS - MODULE
 // =======================
 
+// =======================
+// PAGE PLANNING (HUB)
+// =======================
 
+function ouvrirPlanning(){
+
+    const container = document.querySelector(".container");
+
+    container.innerHTML = `
+        <h1>📅 Planning</h1>
+
+        <div style="margin-bottom:15px;">
+            <button onclick="afficherPlanningJourUI()">Jour</button>
+            <button onclick="ouvrirPlanningSemaine()">Semaine</button>
+        </div>
+
+        <div id="planningContent"></div>
+
+        <br>
+
+        <button onclick="afficherDashboard()">⬅️ Retour</button>
+    `;
+
+    afficherPlanningJourUI();
+}
+
+
+// =======================
+// VUE JOUR (UI)
+// =======================
+
+function afficherPlanningJourUI(){
+
+    const content = document.getElementById("planningContent");
+
+    content.innerHTML = `
+        <input type="date" id="planningDate" onchange="changerJourPlanning()">
+
+        <div id="planningListe"></div>
+    `;
+
+    const today = new Date().toISOString().split("T")[0];
+
+    document.getElementById("planningDate").value = today;
+
+    afficherPlanningJour(today);
+}
+
+
+// =======================
+// LOGIQUE JOUR
+// =======================
+
+function changerJourPlanning(){
+
+    const date = document.getElementById("planningDate").value;
+
+    afficherPlanningJour(date);
+}
+
+
+function afficherPlanningJour(date){
+
+    const container = document.getElementById("planningListe");
+
+    const prestations = HestiaData.prestations.filter(p => p.date === date);
+
+    if(prestations.length === 0){
+        container.innerHTML = "<p>Aucune prestation</p>";
+        return;
+    }
+
+    const couleurs = {
+        a_faire: "#f39c12",
+        en_cours: "#3498db",
+        termine: "#2ecc71"
+    };
+
+    container.innerHTML = prestations.map(p => `
+        <div class="card" style="border-left:5px solid ${couleurs[p.statut]}">
+            <strong>${p.heure || "--:--"}</strong> - ${p.type}
+        </div>
+    `).join("");
+}
+
+
+// =======================
+// VUE SEMAINE
+// =======================
+
+function ouvrirPlanningSemaine(){
+
+    const container = document.getElementById("planningContent");
+
+    const today = new Date();
+
+    const startOfWeek = getStartOfWeek(today);
+
+    container.innerHTML = `
+        <div id="planningSemaine"></div>
+    `;
+
+    afficherPlanningSemaine(startOfWeek);
+}
+
+
+function afficherPlanningSemaine(startDate){
+
+    const container = document.getElementById("planningSemaine");
+
+    let html = "";
+
+    for(let i = 0; i < 7; i++){
+
+        const date = new Date(startDate);
+        date.setDate(date.getDate() + i);
+
+        const dateStr = formatDate(date);
+
+        const prestations = HestiaData.prestations.filter(p => p.date === dateStr);
+
+        html += `
+            <div style="margin-bottom:20px; cursor:pointer;" onclick="ouvrirJourDepuisSemaine('${dateStr}')">
+                <h3>${dateStr}</h3>
+
+                ${
+                    prestations.length === 0
+                        ? "<p>Aucune prestation</p>"
+                        : prestations.map(p => {
+
+                            const couleurs = {
+                                a_faire: "#f39c12",
+                                en_cours: "#3498db",
+                                termine: "#2ecc71"
+                            };
+
+                            return `
+                                <div class="card" style="border-left:5px solid ${couleurs[p.statut]}">
+                                    ${p.heure || "--:--"} - ${p.type}
+                                </div>
+                            `;
+                        }).join("")
+                }
+            </div>
+        `;
+    }
+
+    container.innerHTML = html;
+}
+
+
+// =======================
+// NAVIGATION SEMAINE → JOUR
+// =======================
+
+function ouvrirJourDepuisSemaine(date){
+
+    afficherPlanningJourUI();
+
+    setTimeout(() => {
+        document.getElementById("planningDate").value = date;
+        afficherPlanningJour(date);
+    }, 0);
+}
+
+
+// =======================
+// HELPERS
+// =======================
+
+function getStartOfWeek(date){
+
+    const d = new Date(date);
+    const day = d.getDay();
+
+    const diff = (day === 0 ? -6 : 1 - day);
+
+    d.setDate(d.getDate() + diff);
+
+    return d;
+}
+
+
+function formatDate(date){
+
+    return date.toISOString().split("T")[0];
+}
 // =======================
 // CREATION
 // =======================

@@ -83,65 +83,13 @@ function afficherDashboard(){
 
     const container = document.querySelector(".container");
 
-
     container.innerHTML = `
+        <h1>🏠 Hestia</h1>
 
-    <h1>🏛️ Hestia</h1>
+        <button onclick="ouvrirClients()">👤 Clients</button>
 
+        <button onclick="ouvrirPrestations()">🧹 Prestations</button>
 
-    <p>
-    Bonjour ${HestiaData.entreprise.prenom} 👋
-    </p>
-
-
-    <p>
-    ${HestiaData.entreprise.nom}
-    </p>
-
-
-    <hr>
-
-
-    <div class="stats">
-
-<div class="card">
-<h3>👥 Clients</h3>
-<strong>${HestiaData.clients.length}</strong>
-</div>
-
-
-<div class="card">
-<h3>🧾 Devis</h3>
-<strong>${HestiaData.devis.length}</strong>
-</div>
-
-
-<div class="card">
-<h3>📅 Planning</h3>
-<strong>${HestiaData.planning.length}</strong>
-</div>
-
-</div>
-
-
-    <br>
-
-
-    <button>
-    🧾 Nouveau devis
-    </button>
-
-
-  <button onclick="ouvrirClients()">
-👥 Mes clients
-</button>
-
-
-    <button>
-    🤖 Hermès
-    </button>
-
-
+        <button onclick="ouvrirPlanning()">📅 Planning</button>
     `;
-
 }
