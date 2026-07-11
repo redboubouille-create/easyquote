@@ -1,4 +1,4 @@
-<button onclick="ouvrirPlanning()">📅 Planning</button>
+
 
 
 // Rendre accessibles les fonctions appelées via onclick
