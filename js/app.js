@@ -1,12 +1,15 @@
 // =======================
-// CORE UI
+// RENDER (UI CORE)
 // =======================
 
 function render(html) {
-    const container = document.querySelector(".container");
-    if (!container) return;
+    const screen = document.getElementById("screen");
+    if (!screen) {
+        console.error("Screen introuvable");
+        return;
+    }
 
-    container.innerHTML = html;
+    screen.innerHTML = html;
 }
 
 
@@ -16,13 +19,18 @@ function render(html) {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    // ✅ Charger les données AVANT tout
-    if (typeof HestiaData !== "undefined" && HestiaData.charger) {
+    console.log("✅ Hestia démarre");
+
+    if (typeof HestiaData === "undefined") {
+        console.error("❌ HestiaData non chargé");
+        return;
+    }
+
+    if (typeof HestiaData.charger === "function") {
         HestiaData.charger();
     }
 
     demarrerHestia();
-
 });
 
 
@@ -30,9 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
 // CORE
 // =======================
 
-function demarrerHestia(){
+function demarrerHestia() {
 
-    if(!HestiaData?.entreprise?.nom){
+    if (!HestiaData?.entreprise?.nom) {
         afficherCreationProfil();
     } else {
         afficherDashboard();
@@ -42,10 +50,10 @@ function demarrerHestia(){
 
 
 // =======================
-// UI
+// UI - PROFIL
 // =======================
 
-function afficherCreationProfil(){
+function afficherCreationProfil() {
 
     render(`
         <h1>🏛️ Hestia</h1>
@@ -53,11 +61,12 @@ function afficherCreationProfil(){
         <p>Créons votre espace professionnel</p>
 
         <input id="nomEntreprise" placeholder="Nom de l'entreprise">
+        <br><br>
 
         <input id="prenom" placeholder="Votre prénom">
+        <br><br>
 
         <input id="telephone" placeholder="Téléphone">
-
         <br><br>
 
         <button onclick="creerProfil()">
@@ -67,14 +76,13 @@ function afficherCreationProfil(){
 }
 
 
-function creerProfil(){
+function creerProfil() {
 
     const nom = document.getElementById("nomEntreprise")?.value || "";
     const prenom = document.getElementById("prenom")?.value || "";
     const telephone = document.getElementById("telephone")?.value || "";
 
-    // ✅ Sécurité minimale
-    if(!nom){
+    if (!nom) {
         alert("Le nom de l'entreprise est requis");
         return;
     }
@@ -83,13 +91,19 @@ function creerProfil(){
     HestiaData.entreprise.prenom = prenom;
     HestiaData.entreprise.telephone = telephone;
 
-    HestiaData.sauvegarder();
+    if (typeof HestiaData.sauvegarder === "function") {
+        HestiaData.sauvegarder();
+    }
 
     afficherDashboard();
 }
 
 
-function afficherDashboard(){
+// =======================
+// UI - DASHBOARD
+// =======================
+
+function afficherDashboard() {
 
     render(`
         <h1>🏠 Hestia</h1>
@@ -106,9 +120,9 @@ function afficherDashboard(){
 
 
 // =======================
-// GLOBAL (OBLIGATOIRE)
+// GLOBAL (IMPORTANT TELEGRAM)
 // =======================
 
+window.demarrerHestia = demarrerHestia;
 window.creerProfil = creerProfil;
 window.afficherDashboard = afficherDashboard;
-window.demarrerHestia = demarrerHestia;
