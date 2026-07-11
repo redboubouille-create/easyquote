@@ -132,9 +132,9 @@ function afficherDashboard(){
     </button>
 
 
-    <button>
-    👥 Mes clients
-    </button>
+  <button onclick="ouvrirClients()">
+👥 Mes clients
+</button>
 
 
     <button>
