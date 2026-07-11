@@ -2,28 +2,18 @@
 // PRESTATIONS - MODULE
 // =======================
 
-// =======================
-// CREATION (DATA)
-// =======================
-
 function creerPrestation(data) {
   return {
     id: HestiaData.genererId(),
-
     type: data.type || "menage",
-
     clientId: data.clientId || null,
     logementId: data.logementId || null,
-
     date: data.date || "",
     heure: data.heure || "",
-
     statut: "a_faire",
-
     intervenant: data.intervenant || "",
     duree: data.duree || "",
     notes: data.notes || "",
-
     createdAt: new Date().toISOString()
   };
 }
@@ -97,7 +87,7 @@ function afficherListePrestations() {
 
 function afficherFormulairePrestation(id = null) {
 
-  const prestation = HestiaData.prestations.find((p) => p.id === id);
+  const prestation = HestiaData.prestations.find(p => p.id === id);
 
   render(`
     <h1>${id ? "Modifier" : "Nouvelle"} prestation</h1>
@@ -110,24 +100,27 @@ function afficherFormulairePrestation(id = null) {
 
     <select id="prestationClient">
       <option value="">Client</option>
-      ${HestiaData.clients.map((c) => `<option value="${c.id}">${c.nom}</option>`).join("")}
+      ${HestiaData.clients.map(c => `
+        <option value="${c.id}">${c.nom}</option>
+      `).join("")}
     </select>
 
     <select id="prestationLogement">
       <option value="">Logement</option>
-      ${HestiaData.logements.map((l) => `<option value="${l.id}">${l.nom}</option>`).join("")}
+      ${HestiaData.logements.map(l => `
+        <option value="${l.id}">${l.nom}</option>
+      `).join("")}
     </select>
 
     <input type="date" id="prestationDate">
     <input type="time" id="prestationHeure">
 
     <input type="text" id="prestationDuree" placeholder="Durée (minutes)">
-
     <textarea id="prestationNotes" placeholder="Notes"></textarea>
 
     <br>
 
-    <button onclick="enregistrerPrestation(${id ?? "null"})">
+    <button onclick="enregistrerPrestation(${id || "null"})">
       💾 Enregistrer
     </button>
 
@@ -147,7 +140,7 @@ function afficherFormulairePrestation(id = null) {
 
 
 // =======================
-// ENREGISTREMENT
+// SAVE
 // =======================
 
 function enregistrerPrestation(id = null) {
@@ -168,32 +161,16 @@ function enregistrerPrestation(id = null) {
   }
 
   if (id !== null) {
-
-    const index = HestiaData.prestations.findIndex((p) => p.id === id);
-
+    const index = HestiaData.prestations.findIndex(p => p.id === id);
     if (index !== -1) {
       HestiaData.prestations[index] = {
         ...HestiaData.prestations[index],
         ...data
       };
     }
-
   } else {
-
     const prestation = creerPrestation(data);
     HestiaData.prestations.push(prestation);
-
-    const client = HestiaData.clients.find((c) => c.id === prestation.clientId);
-    if (client) {
-      client.historique = client.historique || [];
-      client.historique.push(`Prestation (${prestation.type}) le ${prestation.date}`);
-    }
-
-    const logement = HestiaData.logements.find((l) => l.id === prestation.logementId);
-    if (logement) {
-      logement.historique = logement.historique || [];
-      logement.historique.push(`Prestation (${prestation.type}) le ${prestation.date}`);
-    }
   }
 
   HestiaData.sauvegarder();
@@ -207,15 +184,11 @@ function enregistrerPrestation(id = null) {
 
 function ouvrirFichePrestation(id) {
 
-  const p = HestiaData.prestations.find((x) => x.id === id);
+  const p = HestiaData.prestations.find(x => x.id === id);
+  if (!p) return ouvrirPrestations();
 
-  if (!p) {
-    ouvrirPrestations();
-    return;
-  }
-
-  const client = HestiaData.clients.find((c) => c.id === p.clientId);
-  const logement = HestiaData.logements.find((l) => l.id === p.logementId);
+  const client = HestiaData.clients.find(c => c.id === p.clientId);
+  const logement = HestiaData.logements.find(l => l.id === p.logementId);
 
   render(`
     <h1>${p.type}</h1>
@@ -234,9 +207,6 @@ function ouvrirFichePrestation(id) {
 
     <button onclick="afficherFormulairePrestation(${p.id})">✏️ Modifier</button>
     <button onclick="ouvrirPrestations()">⬅️ Retour</button>
-
-    <br><br>
-    <button onclick="ouvrirPlanning()">📅 Voir le planning</button>
   `);
 }
 

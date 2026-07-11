@@ -1,7 +1,25 @@
+// =======================
+// CORE UI
+// =======================
+
+function render(html) {
+    const container = document.querySelector(".container");
+    if (!container) return;
+
+    container.innerHTML = html;
+}
+
+
+// =======================
+// INIT
+// =======================
+
 document.addEventListener("DOMContentLoaded", () => {
 
     // ✅ Charger les données AVANT tout
-    HestiaData.charger();
+    if (typeof HestiaData !== "undefined" && HestiaData.charger) {
+        HestiaData.charger();
+    }
 
     demarrerHestia();
 
@@ -14,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function demarrerHestia(){
 
-    if(!HestiaData.entreprise.nom){
+    if(!HestiaData?.entreprise?.nom){
         afficherCreationProfil();
     } else {
         afficherDashboard();
@@ -40,6 +58,8 @@ function afficherCreationProfil(){
 
         <input id="telephone" placeholder="Téléphone">
 
+        <br><br>
+
         <button onclick="creerProfil()">
             Créer mon espace
         </button>
@@ -52,6 +72,12 @@ function creerProfil(){
     const nom = document.getElementById("nomEntreprise")?.value || "";
     const prenom = document.getElementById("prenom")?.value || "";
     const telephone = document.getElementById("telephone")?.value || "";
+
+    // ✅ Sécurité minimale
+    if(!nom){
+        alert("Le nom de l'entreprise est requis");
+        return;
+    }
 
     HestiaData.entreprise.nom = nom;
     HestiaData.entreprise.prenom = prenom;
@@ -69,8 +95,10 @@ function afficherDashboard(){
         <h1>🏠 Hestia</h1>
 
         <button onclick="ouvrirClients()">👤 Clients</button>
+        <br><br>
 
         <button onclick="ouvrirPrestations()">🧹 Prestations</button>
+        <br><br>
 
         <button onclick="ouvrirPlanning()">📅 Planning</button>
     `);
@@ -78,8 +106,9 @@ function afficherDashboard(){
 
 
 // =======================
-// GLOBAL
+// GLOBAL (OBLIGATOIRE)
 // =======================
 
 window.creerProfil = creerProfil;
 window.afficherDashboard = afficherDashboard;
+window.demarrerHestia = demarrerHestia;

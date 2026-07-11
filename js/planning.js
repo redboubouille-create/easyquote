@@ -23,15 +23,13 @@ function afficherPlanning() {
   const el = document.getElementById("planningListe");
   if (!el) return;
 
-  const prestations = [...(HestiaData.prestations || [])]; 
-  // ✅ copie pour éviter de modifier le state global (TRÈS important pour la suite)
+  const prestations = [...(HestiaData.prestations || [])];
 
   if (prestations.length === 0) {
     el.innerHTML = "<p>Aucune prestation</p>";
     return;
   }
 
-  // ✅ tri robuste (date + heure propre)
   prestations.sort((a, b) => {
     const d1 = new Date(`${a.date}T${a.heure || "00:00"}`);
     const d2 = new Date(`${b.date}T${b.heure || "00:00"}`);
@@ -46,9 +44,5 @@ function afficherPlanning() {
   `).join("");
 }
 
-
-// =======================
-// GLOBAL
-// =======================
 
 window.ouvrirPlanning = ouvrirPlanning;
