@@ -18,7 +18,7 @@ function creerPrestation(data) {
     date: data.date || "",
     heure: data.heure || "",
 
-    statut: "a_faire", // a_faire | en_cours | termine
+    statut: "a_faire",
 
     intervenant: data.intervenant || "",
     duree: data.duree || "",
@@ -28,15 +28,14 @@ function creerPrestation(data) {
   };
 }
 
+
 // =======================
 // PAGE PRINCIPALE
 // =======================
 
 function ouvrirPrestations() {
-  const container = document.querySelector(".container");
-  if (!container) return;
 
-  container.innerHTML = `
+  render(`
     <h1>🧹 Prestations</h1>
 
     <button onclick="afficherFormulairePrestation()">
@@ -52,16 +51,18 @@ function ouvrirPrestations() {
     <br>
 
     <button onclick="afficherDashboard()">⬅️ Retour</button>
-  `;
+  `);
 
   afficherListePrestations();
 }
+
 
 // =======================
 // LISTE
 // =======================
 
 function afficherListePrestations() {
+
   const liste = document.getElementById("listePrestations");
   if (!liste) return;
 
@@ -71,6 +72,7 @@ function afficherListePrestations() {
   }
 
   liste.innerHTML = HestiaData.prestations.map((p) => {
+
     const client = HestiaData.clients.find((c) => c.id === p.clientId);
     const logement = HestiaData.logements.find((l) => l.id === p.logementId);
 
@@ -88,16 +90,16 @@ function afficherListePrestations() {
   }).join("");
 }
 
+
 // =======================
-// FORMULAIRE (CREATE/EDIT)
+// FORMULAIRE
 // =======================
 
 function afficherFormulairePrestation(id = null) {
-  const prestation = HestiaData.prestations.find((p) => p.id === id);
-  const container = document.querySelector(".container");
-  if (!container) return;
 
-  container.innerHTML = `
+  const prestation = HestiaData.prestations.find((p) => p.id === id);
+
+  render(`
     <h1>${id ? "Modifier" : "Nouvelle"} prestation</h1>
 
     <select id="prestationType">
@@ -125,12 +127,12 @@ function afficherFormulairePrestation(id = null) {
 
     <br>
 
-    <button onclick="enregistrerPrestation(${id || "null"})">
+    <button onclick="enregistrerPrestation(${id ?? "null"})">
       💾 Enregistrer
     </button>
 
     <button onclick="ouvrirPrestations()">⬅️ Retour</button>
-  `;
+  `);
 
   if (prestation) {
     document.getElementById("prestationType").value = prestation.type || "menage";
@@ -143,11 +145,13 @@ function afficherFormulairePrestation(id = null) {
   }
 }
 
+
 // =======================
 // ENREGISTREMENT
 // =======================
 
 function enregistrerPrestation(id = null) {
+
   const data = {
     type: document.getElementById("prestationType").value,
     clientId: Number(document.getElementById("prestationClient").value) || null,
@@ -164,6 +168,7 @@ function enregistrerPrestation(id = null) {
   }
 
   if (id !== null) {
+
     const index = HestiaData.prestations.findIndex((p) => p.id === id);
 
     if (index !== -1) {
@@ -172,7 +177,9 @@ function enregistrerPrestation(id = null) {
         ...data
       };
     }
+
   } else {
+
     const prestation = creerPrestation(data);
     HestiaData.prestations.push(prestation);
 
@@ -193,11 +200,13 @@ function enregistrerPrestation(id = null) {
   ouvrirPrestations();
 }
 
+
 // =======================
 // FICHE
 // =======================
 
 function ouvrirFichePrestation(id) {
+
   const p = HestiaData.prestations.find((x) => x.id === id);
 
   if (!p) {
@@ -208,10 +217,7 @@ function ouvrirFichePrestation(id) {
   const client = HestiaData.clients.find((c) => c.id === p.clientId);
   const logement = HestiaData.logements.find((l) => l.id === p.logementId);
 
-  const container = document.querySelector(".container");
-  if (!container) return;
-
-  container.innerHTML = `
+  render(`
     <h1>${p.type}</h1>
 
     <p><strong>Client :</strong> ${client ? client.nom : "-"}</p>
@@ -231,11 +237,12 @@ function ouvrirFichePrestation(id) {
 
     <br><br>
     <button onclick="ouvrirPlanning()">📅 Voir le planning</button>
-  `;
+  `);
 }
 
+
 // =======================
-// EXPORT GLOBALS
+// GLOBAL
 // =======================
 
 window.ouvrirPrestations = ouvrirPrestations;

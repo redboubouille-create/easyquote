@@ -11,9 +11,7 @@ let filtreClients = "";
 
 function ouvrirClients(){
 
-    const container = document.querySelector(".container");
-
-    container.innerHTML = `
+    render(`
         <h1>👥 Clients</h1>
 
         <button onclick="afficherFormulaireClient()">
@@ -35,7 +33,7 @@ function ouvrirClients(){
         <button onclick="afficherDashboard()">
             ⬅️ Retour
         </button>
-    `;
+    `);
 
     afficherListeClients();
 }
@@ -58,10 +56,10 @@ function mettreAJourRecherche(valeur){
 function afficherListeClients(){
 
     const liste = document.getElementById("listeClients");
+    if(!liste) return;
 
     let clients = HestiaData.clients;
 
-    // 🔍 Filtre
     if(filtreClients){
         clients = clients.filter(client =>
             (client.nom || "").toLowerCase().includes(filtreClients) ||
@@ -90,31 +88,21 @@ function afficherListeClients(){
 function ouvrirFicheClient(id){
 
     const client = HestiaData.clients.find(c => c.id === id);
-
     if(!client){
         ouvrirClients();
         return;
     }
 
-    const container = document.querySelector(".container");
-
-    container.innerHTML = `
+    render(`
         <h1>${client.nom}</h1>
 
-        <!-- ACTIONS -->
         <div>
-            <button onclick="afficherFormulaireClient(${client.id})">
-                ✏️ Modifier
-            </button>
-
-            <button onclick="confirmerSuppression(${client.id})">
-                🗑 Supprimer
-            </button>
+            <button onclick="afficherFormulaireClient(${client.id})">✏️ Modifier</button>
+            <button onclick="confirmerSuppression(${client.id})">🗑 Supprimer</button>
         </div>
 
         <hr>
 
-        <!-- INFOS -->
         <h2>📋 Informations</h2>
 
         <p><strong>Téléphone :</strong> ${client.telephone || "-"}</p>
@@ -124,18 +112,15 @@ function ouvrirFicheClient(id){
 
         <hr>
 
-        <!-- NOTES -->
         <h2>📝 Notes</h2>
-
         <p>${client.notes || "Aucune note"}</p>
 
         <hr>
 
-        <!-- LOGEMENTS (FUTUR MODULE) -->
         <h2>🏠 Logements</h2>
 
         ${
-            client.logements && client.logements.length > 0
+            client.logements?.length
             ? client.logements.map(l => `<p>• ${l.nom}</p>`).join("")
             : `<p>Aucun logement lié</p>`
         }
@@ -146,26 +131,23 @@ function ouvrirFicheClient(id){
 
         <hr>
 
-        <!-- HISTORIQUE -->
         <h2>📊 Historique</h2>
 
         ${
-            client.historique && client.historique.length > 0
+            client.historique?.length
             ? client.historique.map(h => `<p>• ${h}</p>`).join("")
             : `<p>Aucune activité</p>`
         }
 
         <hr>
 
-        <button onclick="ouvrirClients()">
-            ⬅️ Retour
-        </button>
-    `;
+        <button onclick="ouvrirClients()">⬅️ Retour</button>
+    `);
 }
 
 
 // =======================
-// FORMULAIRE (CREATE / EDIT)
+// FORMULAIRE
 // =======================
 
 function afficherFormulaireClient(id = null){
@@ -174,18 +156,16 @@ function afficherFormulaireClient(id = null){
         ? HestiaData.clients.find(c => c.id === id)
         : null;
 
-    const container = document.querySelector(".container");
-
-    container.innerHTML = `
+    render(`
         <h1>${client ? "✏️ Modifier" : "➕ Nouveau"} client</h1>
 
-        <input id="clientNom" placeholder="Nom du client" value="${client ? client.nom : ""}">
-        <input id="clientTelephone" placeholder="Téléphone" value="${client ? client.telephone : ""}">
-        <input id="clientAdresse" placeholder="Adresse" value="${client ? client.adresse : ""}">
-        <input id="clientLogement" placeholder="Type de logement" value="${client ? client.logement : ""}">
-        <input id="clientFrequence" placeholder="Fréquence de passage" value="${client ? client.frequence : ""}">
+        <input id="clientNom" placeholder="Nom du client" value="${client?.nom || ""}">
+        <input id="clientTelephone" placeholder="Téléphone" value="${client?.telephone || ""}">
+        <input id="clientAdresse" placeholder="Adresse" value="${client?.adresse || ""}">
+        <input id="clientLogement" placeholder="Type de logement" value="${client?.logement || ""}">
+        <input id="clientFrequence" placeholder="Fréquence de passage" value="${client?.frequence || ""}">
 
-        <textarea id="clientNotes" placeholder="Notes importantes">${client ? client.notes : ""}</textarea>
+        <textarea id="clientNotes" placeholder="Notes importantes">${client?.notes || ""}</textarea>
 
         <br>
 
@@ -196,7 +176,7 @@ function afficherFormulaireClient(id = null){
         <button onclick="${client ? `ouvrirFicheClient(${client.id})` : 'ouvrirClients()'}">
             ⬅️ Retour
         </button>
-    `;
+    `);
 }
 
 
@@ -207,16 +187,15 @@ function afficherFormulaireClient(id = null){
 function enregistrerClient(id){
 
     const data = {
-        nom: document.getElementById("clientNom").value.trim(),
-        telephone: document.getElementById("clientTelephone").value.trim(),
-        adresse: document.getElementById("clientAdresse").value.trim(),
-        logement: document.getElementById("clientLogement").value.trim(),
-        frequence: document.getElementById("clientFrequence").value.trim(),
-        notes: document.getElementById("clientNotes").value.trim()
+        nom: document.getElementById("clientNom")?.value.trim() || "",
+        telephone: document.getElementById("clientTelephone")?.value.trim() || "",
+        adresse: document.getElementById("clientAdresse")?.value.trim() || "",
+        logement: document.getElementById("clientLogement")?.value.trim() || "",
+        frequence: document.getElementById("clientFrequence")?.value.trim() || "",
+        notes: document.getElementById("clientNotes")?.value.trim() || ""
     };
 
     if(id){
-        // UPDATE
         const index = HestiaData.clients.findIndex(c => c.id === id);
 
         if(index !== -1){
@@ -227,7 +206,6 @@ function enregistrerClient(id){
         }
 
     } else {
-        // CREATE
         const client = creerClient(data);
         HestiaData.clients.push(client);
     }
@@ -243,9 +221,7 @@ function enregistrerClient(id){
 
 function confirmerSuppression(id){
 
-    const confirmation = confirm("Supprimer ce client ?");
-
-    if(!confirmation) return;
+    if(!confirm("Supprimer ce client ?")) return;
 
     supprimerClient(id);
 }
@@ -266,24 +242,42 @@ function supprimerClient(id){
 function creerClient(data){
 
     return {
-        id: Date.now(),
+        id: HestiaData.genererId(),
 
-        nom: data.nom || "",
-        telephone: data.telephone || "",
-        adresse: data.adresse || "",
+        nom: data.nom,
+        telephone: data.telephone,
+        adresse: data.adresse,
         email: "",
 
-        logement: data.logement || "",
-        frequence: data.frequence || "",
+        logement: data.logement,
+        frequence: data.frequence,
 
-        notes: data.notes || "",
+        notes: data.notes,
 
         photos: [],
         historique: [],
-        logements: [] // ✅ NOUVEAU
+        logements: []
     };
 }
+
+
+// =======================
+// FUTUR MODULE
+// =======================
 
 function lierLogement(id){
     alert("Module logements bientôt disponible");
 }
+
+
+// =======================
+// GLOBAL
+// =======================
+
+window.ouvrirClients = ouvrirClients;
+window.afficherFormulaireClient = afficherFormulaireClient;
+window.enregistrerClient = enregistrerClient;
+window.ouvrirFicheClient = ouvrirFicheClient;
+window.confirmerSuppression = confirmerSuppression;
+window.mettreAJourRecherche = mettreAJourRecherche;
+window.lierLogement = lierLogement;

@@ -1,89 +1,71 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+    // ✅ Charger les données AVANT tout
+    HestiaData.charger();
+
     demarrerHestia();
 
 });
 
 
+// =======================
+// CORE
+// =======================
+
 function demarrerHestia(){
 
-    if(HestiaData.entreprise.nom === ""){
-
+    if(!HestiaData.entreprise.nom){
         afficherCreationProfil();
-
     } else {
-
         afficherDashboard();
-
     }
 
 }
 
 
+// =======================
+// UI
+// =======================
 
 function afficherCreationProfil(){
 
-    const container = document.querySelector(".container");
+    render(`
+        <h1>🏛️ Hestia</h1>
 
+        <p>Créons votre espace professionnel</p>
 
-    container.innerHTML = `
+        <input id="nomEntreprise" placeholder="Nom de l'entreprise">
 
-    <h1>🏛️ Hestia</h1>
+        <input id="prenom" placeholder="Votre prénom">
 
-    <p>
-    Créons votre espace professionnel
-    </p>
+        <input id="telephone" placeholder="Téléphone">
 
-
-    <input id="nomEntreprise" placeholder="Nom de l'entreprise">
-
-
-    <input id="prenom" placeholder="Votre prénom">
-
-
-    <input id="telephone" placeholder="Téléphone">
-
-
-    <button onclick="creerProfil()">
-
-    Créer mon espace
-
-    </button>
-
-    `;
-
+        <button onclick="creerProfil()">
+            Créer mon espace
+        </button>
+    `);
 }
-
 
 
 function creerProfil(){
 
-    HestiaData.entreprise.nom =
-    document.getElementById("nomEntreprise").value;
+    const nom = document.getElementById("nomEntreprise")?.value || "";
+    const prenom = document.getElementById("prenom")?.value || "";
+    const telephone = document.getElementById("telephone")?.value || "";
 
-
-    HestiaData.entreprise.prenom =
-    document.getElementById("prenom").value;
-
-
-    HestiaData.entreprise.telephone =
-    document.getElementById("telephone").value;
-
+    HestiaData.entreprise.nom = nom;
+    HestiaData.entreprise.prenom = prenom;
+    HestiaData.entreprise.telephone = telephone;
 
     HestiaData.sauvegarder();
 
-
     afficherDashboard();
-
 }
-
 
 
 function afficherDashboard(){
 
-    const container = document.querySelector(".container");
-
-    container.innerHTML = `
+    render(`
         <h1>🏠 Hestia</h1>
 
         <button onclick="ouvrirClients()">👤 Clients</button>
@@ -91,5 +73,13 @@ function afficherDashboard(){
         <button onclick="ouvrirPrestations()">🧹 Prestations</button>
 
         <button onclick="ouvrirPlanning()">📅 Planning</button>
-    `;
+    `);
 }
+
+
+// =======================
+// GLOBAL
+// =======================
+
+window.creerProfil = creerProfil;
+window.afficherDashboard = afficherDashboard;

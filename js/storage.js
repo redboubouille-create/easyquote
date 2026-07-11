@@ -6,6 +6,7 @@ const HestiaData = {
 
     version: "1.0.0",
     lastUpdate: null,
+    STORAGE_KEY: "hestiaData",
 
 
     // =======================
@@ -25,8 +26,8 @@ const HestiaData = {
     // =======================
 
     clients: [],
-    logements: [], // ✅ AJOUT IMPORTANT
-    prestations: [], // ✅ FUTUR MODULE
+    logements: [],
+    prestations: [],
 
     devis: [],
     factures: [],
@@ -38,7 +39,7 @@ const HestiaData = {
     // =======================
 
     genererId(){
-        return Date.now() + Math.floor(Math.random() * 1000);
+        return `${Date.now()}-${Math.floor(Math.random() * 100000)}`;
     },
 
 
@@ -67,7 +68,7 @@ const HestiaData = {
                 planning: this.planning
             });
 
-            localStorage.setItem("hestiaData", data);
+            localStorage.setItem(this.STORAGE_KEY, data);
 
         } catch (e) {
             console.error("Erreur sauvegarde :", e);
@@ -83,25 +84,32 @@ const HestiaData = {
 
         try {
 
-            const data = localStorage.getItem("hestiaData");
+            const data = localStorage.getItem(this.STORAGE_KEY);
 
             if(!data) return;
 
             const sauvegarde = JSON.parse(data);
 
-            // ✅ Versionning (prépare futur migrations)
-            this.version = sauvegarde.version || "1.0.0";
+            if(!sauvegarde || typeof sauvegarde !== "object") return;
+
+            // ✅ VERSION
+            this.version = sauvegarde.version || this.version;
             this.lastUpdate = sauvegarde.lastUpdate || null;
 
-            this.entreprise = sauvegarde.entreprise || this.entreprise;
+            // ✅ MERGE SAFE
+            this.entreprise = {
+                ...this.entreprise,
+                ...(sauvegarde.entreprise || {})
+            };
 
-            this.clients = sauvegarde.clients || [];
-            this.logements = sauvegarde.logements || [];
-            this.prestations = sauvegarde.prestations || [];
+            // ✅ ARRAYS SAFE
+            this.clients = Array.isArray(sauvegarde.clients) ? sauvegarde.clients : [];
+            this.logements = Array.isArray(sauvegarde.logements) ? sauvegarde.logements : [];
+            this.prestations = Array.isArray(sauvegarde.prestations) ? sauvegarde.prestations : [];
 
-            this.devis = sauvegarde.devis || [];
-            this.factures = sauvegarde.factures || [];
-            this.planning = sauvegarde.planning || [];
+            this.devis = Array.isArray(sauvegarde.devis) ? sauvegarde.devis : [];
+            this.factures = Array.isArray(sauvegarde.factures) ? sauvegarde.factures : [];
+            this.planning = Array.isArray(sauvegarde.planning) ? sauvegarde.planning : [];
 
         } catch (e) {
             console.error("Erreur chargement :", e);
@@ -110,12 +118,28 @@ const HestiaData = {
 
 
     // =======================
-    // RESET (utile dev)
+    // INIT AUTO (IMPORTANT)
+    // =======================
+
+    init(){
+        this.charger();
+    },
+
+
+    // =======================
+    // RESET
     // =======================
 
     reset(){
 
-        localStorage.removeItem("hestiaData");
+        localStorage.removeItem(this.STORAGE_KEY);
+
+        this.entreprise = {
+            nom: "",
+            prenom: "",
+            telephone: "",
+            email: ""
+        };
 
         this.clients = [];
         this.logements = [];
@@ -130,8 +154,5 @@ const HestiaData = {
 };
 
 
-// =======================
-// INIT
-// =======================
-
-HestiaData.charger();
+// ✅ AUTO START
+HestiaData.init();
