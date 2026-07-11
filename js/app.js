@@ -102,19 +102,26 @@ function afficherDashboard(){
     <hr>
 
 
-    <p>
-    👥 Clients : ${HestiaData.clients.length}
-    </p>
+    <div class="stats">
+
+<div class="card">
+<h3>👥 Clients</h3>
+<strong>${HestiaData.clients.length}</strong>
+</div>
 
 
-    <p>
-    🧾 Devis : ${HestiaData.devis.length}
-    </p>
+<div class="card">
+<h3>🧾 Devis</h3>
+<strong>${HestiaData.devis.length}</strong>
+</div>
 
 
-    <p>
-    📅 Interventions : ${HestiaData.planning.length}
-    </p>
+<div class="card">
+<h3>📅 Planning</h3>
+<strong>${HestiaData.planning.length}</strong>
+</div>
+
+</div>
 
 
     <br>
