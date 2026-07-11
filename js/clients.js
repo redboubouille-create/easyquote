@@ -46,6 +46,22 @@ function afficherListeClients(){
         </div>
     `).join("");
 }
+function confirmerSuppression(id){
+
+    const confirmation = confirm("Supprimer ce client ?");
+
+    if(!confirmation) return;
+
+    supprimerClient(id);
+}
+function supprimerClient(id){
+
+    HestiaData.clients = HestiaData.clients.filter(c => c.id !== id);
+
+    HestiaData.sauvegarder();
+
+    ouvrirClients();
+}
 
 function ouvrirFicheClient(id){
 
@@ -68,6 +84,9 @@ function ouvrirFicheClient(id){
 
         <br>
 
+<button onclick="confirmerSuppression(${client.id})">
+    🗑 Supprimer
+</button>
         <button onclick="ouvrirClients()">
             ⬅️ Retour
         </button>
