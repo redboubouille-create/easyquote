@@ -93,6 +93,17 @@ placeholder="Téléphone">
 placeholder="Adresse">
 
 
+<input id="clientLogement"
+placeholder="Type de logement (maison, appartement...)">
+
+
+<input id="clientFrequence"
+placeholder="Fréquence de passage">
+
+
+<textarea id="clientNotes"
+placeholder="Notes importantes"></textarea>
+
 <button onclick="ajouterClient()">
 
 Enregistrer
@@ -116,6 +127,8 @@ function ajouterClient(){
 
 const client = {
 
+id: Date.now(),
+
 nom:
 document.getElementById("clientNom").value,
 
@@ -128,7 +141,26 @@ adresse:
 document.getElementById("clientAdresse").value,
 
 
+email:"",
+
+
+logement:
+document.getElementById("clientLogement").value,
+
+
+frequence:
+document.getElementById("clientFrequence").value,
+
+
+notes:
+document.getElementById("clientNotes").value,
+
+
+photos:[],
+
+
 historique:[]
+
 
 };
 
