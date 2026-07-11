@@ -7,7 +7,7 @@
 // =======================
 
 function ouvrirPlanning(){
-
+    alert("✅ ouvrirPlaning appelée");
     const container = document.querySelector(".container");
 
     container.innerHTML = `
@@ -33,21 +33,23 @@ function ouvrirPlanning(){
 // VUE JOUR (UI)
 // =======================
 
-function afficherPlanningJourUI(){
+function afficherPlanningJourUI() {
+  const content = document.getElementById("planningContent");
 
-    const content = document.getElementById("planningContent");
+  if (!content) {
+    alert("❌ planningContent introuvable (id planningContent absent ou timing)");
+    return;
+  }
 
-    content.innerHTML = `
-        <input type="date" id="planningDate" onchange="changerJourPlanning()">
+  content.innerHTML = `
+    <input type="date" id="planningDate" onchange="changerJourPlanning()">
+    <div id="planningListe"></div>
+  `;
 
-        <div id="planningListe"></div>
-    `;
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("planningDate").value = today;
 
-    const today = new Date().toISOString().split("T")[0];
-
-    document.getElementById("planningDate").value = today;
-
-    afficherPlanningJour(today);
+  afficherPlanningJour(today);
 }
 
 
