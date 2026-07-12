@@ -1,6 +1,6 @@
 # 🏠 HestiaClean - Mini App Telegram pour entreprises de ménage
 
-**Gestion complète des clients, logements, prestations et devis pour les entreprises de nettoyage spécialisées en locations longue et courte durée (Airbnb, Booking, etc.)**
+**Gestion complète des clients, logements, prestations et devis pour les entreprises de nettoyage spécialisées en locations courte durée (Airbnb, Booking, etc.)**
 
 —
 
