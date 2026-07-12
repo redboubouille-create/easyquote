@@ -1,53 +1,518 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hestia</title>
-
-    <link rel="stylesheet" href="style.css">
-
-    <!-- Telegram Mini App -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HestiaClean - Gestion complète pour entreprises de ménage</title>
+  <meta name="description" content="Gérez vos clients, logements, prestations et planning en un seul endroit">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%234361ee' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'/></svg>">
 </head>
-
 <body>
+  <div class="app-container">
+    <!-- Header avec logo et navigation -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="logo">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" fill="currentColor"/>
+          </svg>
+          <h1>HestiaClean</h1>
+        </div>
+        <nav class="app-nav">
+          <button class="nav-btn active" data-tab="dashboard">
+            <span>📊</span> Tableau de bord
+          </button>
+          <button class="nav-btn" data-tab="clients">
+            <span>👥</span> Clients
+          </button>
+          <button class="nav-btn" data-tab="properties">
+            <span>🏠</span> Logements
+          </button>
+          <button class="nav-btn" data-tab="services">
+            <span>🛠️</span> Prestations
+          </button>
+          <button class="nav-btn" data-tab="schedule">
+            <span>📅</span> Planning
+          </button>
+          <button class="nav-btn" data-tab="quotes">
+            <span>📄</span> Devis
+          </button>
+          <button class="nav-btn" data-tab="notes">
+            <span>📝</span> Notes
+          </button>
+          <button class="nav-btn" data-tab="settings">
+            <span>⚙️</span> Paramètres
+          </button>
+        </nav>
+      </div>
+    </header>
 
-    <div id="app">
-        <!-- Écran principal -->
-        <div id="screen"></div>
+    <!-- Contenu principal -->
+    <main class="app-content">
+      <!-- Tableau de bord -->
+      <section class="tab-content active" id="dashboard">
+        <h2>📊 Tableau de bord</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <h3>Clients actifs</h3>
+            <p id="total-clients">0</p>
+            <small>+<span id="clients-growth">0</span> ce mois</small>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🏠</div>
+            <h3>Logements gérés</h3>
+            <p id="total-properties">0</p>
+            <small>+<span id="properties-growth">0</span> ce mois</small>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🛠️</div>
+            <h3>Prestations</h3>
+            <p id="total-services">0</p>
+            <small>+<span id="services-growth">0</span> ce mois</small>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <h3>Chiffre d'affaires</h3>
+            <p id="total-revenue">0 €</p>
+            <small>+<span id="revenue-growth">0</span> € ce mois</small>
+          </div>
+        </div>
 
-        <!-- Modales / popups -->
-        <div id="modal"></div>
+        <div class="dashboard-sections">
+          <div class="dashboard-section">
+            <h3>📅 Prochaines interventions</h3>
+            <div id="upcoming-schedule" class="schedule-list"></div>
+          </div>
+
+          <div class="dashboard-section">
+            <h3>📝 Notes récentes</h3>
+            <div id="recent-notes" class="notes-list"></div>
+          </div>
+
+          <div class="dashboard-section">
+            <h3>⚠️ Alertes</h3>
+            <div id="alerts-list" class="alerts-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Module Clients -->
+      <section class="tab-content" id="clients">
+        <div class="module-header">
+          <h2>👥 Gestion des clients</h2>
+          <button id="add-client-btn" class="btn-primary">➕ Ajouter client</button>
+        </div>
+
+        <div class="search-filter-container">
+          <div class="search-filter">
+            <input type="text" id="client-search" placeholder="Rechercher un client...">
+            <select id="client-sort">
+              <option value="name-asc">Nom (A-Z)</option>
+              <option value="name-desc">Nom (Z-A)</option>
+              <option value="recent">Plus récent</option>
+              <option value="alphabetical">Alphabétique</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="client-list-container">
+          <ul id="clients-list" class="client-list"></ul>
+        </div>
+      </section>
+
+      <!-- Module Logements -->
+      <section class="tab-content" id="properties">
+        <div class="module-header">
+          <h2>🏠 Gestion des logements</h2>
+          <button id="add-property-btn" class="btn-primary">➕ Ajouter logement</button>
+        </div>
+
+        <div class="search-filter-container">
+          <div class="search-filter">
+            <input type="text" id="property-search" placeholder="Rechercher un logement...">
+            <select id="property-sort">
+              <option value="name-asc">Nom (A-Z)</option>
+              <option value="name-desc">Nom (Z-A)</option>
+              <option value="recent">Plus récent</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="property-list-container">
+          <ul id="properties-list" class="property-list"></ul>
+        </div>
+      </section>
+
+      <!-- Module Prestations -->
+      <section class="tab-content" id="services">
+        <div class="module-header">
+          <h2>🛠️ Gestion des prestations</h2>
+          <button id="add-service-btn" class="btn-primary">➕ Ajouter prestation</button>
+        </div>
+
+        <div class="service-list-container">
+          <ul id="services-list" class="service-list">
+            <li class="service-item">
+              <div class="service-info">
+                <strong>Ménage standard</strong>
+                <div class="service-details">
+                  <span class="service-duration">30 min</span>
+                  <span class="service-price">45 €</span>
+                </div>
+              </div>
+              <div class="service-actions">
+                <button class="btn-edit-service">✏️</button>
+                <button class="btn-delete-service">🗑️</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Module Planning -->
+      <section class="tab-content" id="schedule">
+        <div class="module-header">
+          <h2>📅 Planning des interventions</h2>
+          <div class="schedule-controls">
+            <button id="prev-week" class="btn-secondary">⬅️</button>
+            <h3 id="current-week">Semaine du <span></span></h3>
+            <button id="next-week" class="btn-secondary">➡️</button>
+            <button id="today-btn" class="btn-secondary">Aujourd'hui</button>
+          </div>
+        </div>
+
+        <div class="schedule-container">
+          <div class="schedule-days">
+            <div class="schedule-day" data-day="0">
+              <div class="day-header">Lundi</div>
+              <div class="day-schedule" id="schedule-monday"></div>
+            </div>
+            <div class="schedule-day" data-day="1">
+              <div class="day-header">Mardi</div>
+              <div class="day-schedule" id="schedule-tuesday"></div>
+            </div>
+            <div class="schedule-day" data-day="2">
+              <div class="day-header">Mercredi</div>
+              <div class="day-schedule" id="schedule-wednesday"></div>
+            </div>
+            <div class="schedule-day" data-day="3">
+              <div class="day-header">Jeudi</div>
+              <div class="day-schedule" id="schedule-thursday"></div>
+            </div>
+            <div class="schedule-day" data-day="4">
+              <div class="day-header">Vendredi</div>
+              <div class="day-schedule" id="schedule-friday"></div>
+            </div>
+            <div class="schedule-day" data-day="5">
+              <div class="day-header">Samedi</div>
+              <div class="day-schedule" id="schedule-saturday"></div>
+            </div>
+            <div class="schedule-day" data-day="6">
+              <div class="day-header">Dimanche</div>
+              <div class="day-schedule" id="schedule-sunday"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Module Devis -->
+      <section class="tab-content" id="quotes">
+        <div class="module-header">
+          <h2>📄 Gestion des devis</h2>
+          <button id="add-quote-btn" class="btn-primary">➕ Créer devis</button>
+        </div>
+
+        <div class="search-filter-container">
+          <div class="search-filter">
+            <input type="text" id="quote-search" placeholder="Rechercher un devis...">
+            <select id="quote-status-filter">
+              <option value="all">Tous les statuts</option>
+              <option value="pending">En attente</option>
+              <option value="accepted">Accepté</option>
+              <option value="rejected">Refusé</option>
+              <option value="paid">Payé</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="quote-list-container">
+          <ul id="quotes-list" class="quote-list"></ul>
+        </div>
+      </section>
+
+      <!-- Module Notes -->
+      <section class="tab-content" id="notes">
+        <div class="module-header">
+          <h2>📝 Notes internes</h2>
+          <button id="add-note-btn" class="btn-primary">➕ Ajouter note</button>
+        </div>
+
+        <div class="note-filters">
+          <select id="note-client-filter">
+            <option value="all">Toutes les notes</option>
+          </select>
+          <select id="note-sort">
+            <option value="recent">Plus récentes</option>
+            <option value="oldest">Plus anciennes</option>
+          </select>
+        </div>
+
+        <div class="note-list-container">
+          <ul id="notes-list" class="note-list"></ul>
+        </div>
+      </section>
+
+      <!-- Module Paramètres -->
+      <section class="tab-content" id="settings">
+        <h2>⚙️ Paramètres</h2>
+
+        <div class="settings-section">
+          <h3>💾 Gestion des données</h3>
+          <div class="settings-actions">
+            <button id="export-data" class="btn-secondary">📥 Exporter les données</button>
+            <input type="file" id="import-data" accept=".json" style="display: none;">
+            <button id="import-data-btn" class="btn-secondary">📤 Importer des données</button>
+            <button id="reset-data" class="btn-danger">🗑️ Réinitialiser les données</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3>🎨 Apparence</h3>
+          <label class="settings-item">
+            <input type="checkbox" id="dark-mode-toggle"> Mode sombre
+          </label>
+          <label class="settings-item">
+            <input type="checkbox" id="compact-view-toggle"> Vue compacte
+          </label>
+        </div>
+
+        <div class="settings-section">
+          <h3>ℹ️ À propos</h3>
+          <p>HestiaClean v1.0.0</p>
+          <p>Une application pour gérer votre entreprise de ménage</p>
+          <p><a href="#" id="check-updates">Vérifier les mises à jour</a></p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modals -->
+    <div id="client-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modal-title">Ajouter un client</h3>
+          <button class="modal-close">&times;</button>
+        </div>
+        <form id="client-form" class="modal-form">
+          <div class="form-group">
+            <label for="client-name">Nom complet *</label>
+            <input type="text" id="client-name" required>
+          </div>
+          <div class="form-group">
+            <label for="client-email">Email *</label>
+            <input type="email" id="client-email" required>
+          </div>
+          <div class="form-group">
+            <label for="client-phone">Téléphone</label>
+            <input type="tel" id="client-phone">
+          </div>
+          <div class="form-group">
+            <label for="client-address">Adresse</label>
+            <textarea id="client-address" rows="2"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="client-notes">Notes internes</label>
+            <textarea id="client-notes" rows="3" placeholder="Informations supplémentaires..."></textarea>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary modal-close">Annuler</button>
+            <button type="submit" class="btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
     </div>
 
-    <!-- ===================== -->
-    <!-- DATA -->
-    <!-- ===================== -->
-    <script src="js/storage.js"></script>
+    <div id="property-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="property-modal-title">Ajouter un logement</h3>
+          <button class="modal-close">&times;</button>
+        </div>
+        <form id="property-form" class="modal-form">
+          <div class="form-group">
+            <label for="property-name">Nom du logement *</label>
+            <input type="text" id="property-name" required>
+          </div>
+          <div class="form-group">
+            <label for="property-address">Adresse complète *</label>
+            <input type="text" id="property-address" required>
+          </div>
+          <div class="form-group">
+            <label for="property-type">Type de logement</label>
+            <select id="property-type">
+              <option value="appartement">Appartement</option>
+              <option value="maison">Maison</option>
+              <option value="studio">Studio</option>
+              <option value="chalet">Chalet</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="property-bedrooms">Nombre de chambres</label>
+            <input type="number" id="property-bedrooms" min="1" value="1">
+          </div>
+          <div class="form-group">
+            <label for="property-bathrooms">Nombre de salles de bain</label>
+            <input type="number" id="property-bathrooms" min="1" value="1">
+          </div>
+          <div class="form-group">
+            <label for="property-surface">Surface (m²)</label>
+            <input type="number" id="property-surface" min="10">
+          </div>
+          <div class="form-group">
+            <label for="property-client">Client associé</label>
+            <select id="property-client">
+              <option value="">Aucun</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="property-notes">Notes</label>
+            <textarea id="property-notes" rows="3"></textarea>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary modal-close">Annuler</button>
+            <button type="submit" class="btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
-    <!-- ===================== -->
-    <!-- CORE -->
-    <!-- ===================== -->
-    <script src="js/ui.js"></script>
-    <script src="js/telegram.js"></script>
+    <div id="service-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="service-modal-title">Ajouter une prestation</h3>
+          <button class="modal-close">&times;</button>
+        </div>
+        <form id="service-form" class="modal-form">
+          <div class="form-group">
+            <label for="service-name">Nom de la prestation *</label>
+            <input type="text" id="service-name" required>
+          </div>
+          <div class="form-group">
+            <label for="service-duration">Durée estimée</label>
+            <input type="text" id="service-duration" placeholder="Ex: 1h30" required>
+          </div>
+          <div class="form-group">
+            <label for="service-price">Prix (€) *</label>
+            <input type="number" id="service-price" min="0" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label for="service-description">Description</label>
+            <textarea id="service-description" rows="3"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="service-category">Catégorie</label>
+            <select id="service-category">
+              <option value="cleaning">Nettoyage</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="special">Spécial</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary modal-close">Annuler</button>
+            <button type="submit" class="btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
-    <!-- ===================== -->
-    <!-- MODULES -->
-    <!-- ===================== -->
-    <script src="js/modules/prestations.js"></script>
-    <script src="js/modules/planning.js"></script>
+    <div id="quote-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="quote-modal-title">Créer un devis</h3>
+          <button class="modal-close">&times;</button>
+        </div>
+        <form id="quote-form" class="modal-form">
+          <div class="form-group">
+            <label for="quote-client">Client *</label>
+            <select id="quote-client" required>
+              <option value="">Sélectionner un client</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="quote-property">Logement</label>
+            <select id="quote-property">
+              <option value="">Aucun</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="quote-service">Prestation *</label>
+            <select id="quote-service" required>
+              <option value="">Sélectionner une prestation</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="quote-date">Date de l'intervention *</label>
+            <input type="date" id="quote-date" required>
+          </div>
+          <div class="form-group">
+            <label for="quote-description">Description</label>
+            <textarea id="quote-description" rows="3" placeholder="Détails de la prestation..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="quote-price">Prix (€) *</label>
+            <input type="number" id="quote-price" min="0" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label for="quote-discount">Remise (%)</label>
+            <input type="number" id="quote-discount" min="0" max="100" value="0">
+          </div>
+          <div class="form-group">
+            <label>Total estimé</label>
+            <div class="quote-total">0 €</div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary modal-close">Annuler</button>
+            <button type="submit" class="btn-primary">Générer devis</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
-    <!-- ===================== -->
-    <!-- FEATURES -->
-    <!-- ===================== -->
-    <script src="js/questionnaire.js"></script>
-    <script src="js/clients.js"></script>
+    <div id="note-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="note-modal-title">Ajouter une note</h3>
+          <button class="modal-close">&times;</button>
+        </div>
+        <form id="note-form" class="modal-form">
+          <div class="form-group">
+            <label for="note-title">Titre *</label>
+            <input type="text" id="note-title" required>
+          </div>
+          <div class="form-group">
+            <label for="note-client">Client associé</label>
+            <select id="note-client">
+              <option value="">Aucun</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="note-content">Contenu *</label>
+            <textarea id="note-content" rows="5" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="note-tags">Tags (séparés par des virgules)</label>
+            <input type="text" id="note-tags" placeholder="ex: urgent, client, suivi">
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary modal-close">Annuler</button>
+            <button type="submit" class="btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
-    <!-- ===================== -->
-    <!-- APP (ENTRY POINT) -->
-    <!-- ===================== -->
-    <script src="js/app.js"></script>
-
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

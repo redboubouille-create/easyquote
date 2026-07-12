@@ -1,0 +1,30 @@
+{
+  "name": "hestiaclean",
+  "version": "1.0.0",
+  "description": "Gestion complète pour entreprises de ménage spécialisées en locations courte durée",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .js",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
+    "vite": "^5.0.12"
+  },
+  "keywords": [
+    "ménage",
+    "entreprise",
+    "gestion",
+    "airbnb",
+    "booking",
+    "nettoyage",
+    "logements",
+    "prestations"
+  ],
+  "author": "redboubouille-create",
+  "license": "MIT"
+}
