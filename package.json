@@ -28,3 +28,8 @@
   "author": "redboubouille-create",
   "license": "MIT"
 }
+{
+  "scripts": {
+    "build": "echo 'no build step'"
+  }
+}
